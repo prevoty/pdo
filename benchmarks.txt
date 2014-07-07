@@ -1,0 +1,35 @@
+=== RUN TestSqliteFind
+--- PASS: TestSqliteFind (0.01 seconds)
+=== RUN TestSqliteFindAll
+--- PASS: TestSqliteFindAll (0.00 seconds)
+=== RUN TestSqliteCreate
+--- PASS: TestSqliteCreate (0.00 seconds)
+=== RUN TestSqliteDelete
+--- PASS: TestSqliteDelete (0.00 seconds)
+=== RUN TestSqliteUpdate
+--- PASS: TestSqliteUpdate (0.00 seconds)
+=== RUN TestMySQLFind
+--- PASS: TestMySQLFind (0.07 seconds)
+=== RUN TestMySQLFindAll
+--- PASS: TestMySQLFindAll (0.00 seconds)
+=== RUN TestMySQLCreate
+--- PASS: TestMySQLCreate (0.00 seconds)
+=== RUN TestMySQLDelete
+--- PASS: TestMySQLDelete (0.00 seconds)
+=== RUN TestMySQLUpdate
+--- PASS: TestMySQLUpdate (0.00 seconds)
+PASS
+BenchmarkTable	10000000	       266 ns/op	       8 B/op	       0 allocs/op
+BenchmarkColumns	 2000000	       933 ns/op	      97 B/op	       3 allocs/op
+BenchmarkFieldPointers	 1000000	      1061 ns/op	      97 B/op	       3 allocs/op
+BenchmarkSqliteCreate	    2000	    960968 ns/op	    1153 B/op	      27 allocs/op
+BenchmarkSqliteFind	   50000	     38174 ns/op	    1197 B/op	      34 allocs/op
+BenchmarkSqliteFindAll	   50000	     45658 ns/op	    1635 B/op	      48 allocs/op
+BenchmarkSqliteUpdate	    2000	    897776 ns/op	    1338 B/op	      29 allocs/op
+BenchmarkSqliteDelete	    2000	    914722 ns/op	     879 B/op	      19 allocs/op
+BenchmarkMySQLCreate	    5000	    531208 ns/op	    1120 B/op	      24 allocs/op
+BenchmarkMySQLFind	   10000	    202478 ns/op	    1034 B/op	      25 allocs/op
+BenchmarkMySQLFindAll	   10000	    203189 ns/op	    1464 B/op	      38 allocs/op
+BenchmarkMySQLUpdate	    5000	    555053 ns/op	    1300 B/op	      26 allocs/op
+BenchmarkMySQLDelete	    5000	    562229 ns/op	     893 B/op	      17 allocs/op
+ok  	prevoty/pdo	37.468s
