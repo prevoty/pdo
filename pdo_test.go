@@ -153,6 +153,103 @@ func TestSqliteUpdate(t *testing.T) {
 
 }
 
+func TestSqliteCommit(t *testing.T) {
+
+	EnsureSqlite()
+
+	err := sqlitedb.StartTransaction()
+	if err != nil {
+		t.Error(err)
+	}
+
+	id1, err := sqlitedb.Create(&TestUser{
+		First: "tuser1",
+		Last:  sql.NullString{String: "johnson", Valid: true},
+	})
+	if err != nil {
+		t.Error(err)
+	}
+	id2, err := sqlitedb.Create(&TestUser{
+		First: "tuser2",
+		Last:  sql.NullString{String: "johnson", Valid: true},
+	})
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = sqlitedb.Commit()
+	if err != nil {
+		t.Error(err)
+	}
+
+	rows := make([]*TestUser, 0, 0)
+
+	err = sqlitedb.FindAll(&rows, "WHERE first_name like 'tuser%'")
+	if err != nil {
+		t.Error(err)
+	}
+	if len(rows) != 2 {
+		t.Errorf("expected 2 records inserted, only got %d\n", len(rows))
+	}
+
+	err = sqlitedb.Delete(&TestUser{Id: id1})
+	if err != nil {
+		t.Error(err)
+	}
+	err = sqlitedb.Delete(&TestUser{Id: id2})
+	if err != nil {
+		t.Error(err)
+	}
+
+}
+
+func TestSqliteRollback(t *testing.T) {
+
+	EnsureSqlite()
+
+	err := sqlitedb.StartTransaction()
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, err = sqlitedb.Create(&TestUser{
+		First: "ruser1",
+		Last:  sql.NullString{String: "johnson", Valid: true},
+	})
+	if err != nil {
+		t.Error(err)
+	}
+	_, err = sqlitedb.Create(&TestUser{
+		First: "ruser2",
+		Last:  sql.NullString{String: "johnson", Valid: true},
+	})
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = sqlitedb.Rollback()
+	if err != nil {
+		t.Error(err)
+	}
+
+	rows := make([]*TestUser, 0, 0)
+
+	err = sqlitedb.FindAll(&rows, "WHERE first_name like 'ruser%'")
+	if err != nil {
+		t.Error(err)
+	}
+	if len(rows) != 0 {
+		t.Errorf("expected 0 records inserted, only got %d\n", len(rows))
+		for _, user := range rows {
+			err = sqlitedb.Delete(&TestUser{Id: user.Id})
+			if err != nil {
+				t.Error(err)
+			}
+		}
+	}
+
+}
+
 func TestMySQLFind(t *testing.T) {
 
 	EnsureMySQL()
@@ -272,6 +369,103 @@ func TestMySQLUpdate(t *testing.T) {
 	err = mysqldb.Delete(user)
 	if err != nil {
 		t.Error(err)
+	}
+
+}
+
+func TestMySQLCommit(t *testing.T) {
+
+	EnsureMySQL()
+
+	err := mysqldb.StartTransaction()
+	if err != nil {
+		t.Error(err)
+	}
+
+	id1, err := mysqldb.Create(&TestUser{
+		First: "tuser1",
+		Last:  sql.NullString{String: "johnson", Valid: true},
+	})
+	if err != nil {
+		t.Error(err)
+	}
+	id2, err := mysqldb.Create(&TestUser{
+		First: "tuser2",
+		Last:  sql.NullString{String: "johnson", Valid: true},
+	})
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = mysqldb.Commit()
+	if err != nil {
+		t.Error(err)
+	}
+
+	rows := make([]*TestUser, 0, 0)
+
+	err = mysqldb.FindAll(&rows, "WHERE first_name like 'tuser%'")
+	if err != nil {
+		t.Error(err)
+	}
+	if len(rows) != 2 {
+		t.Errorf("expected 2 records inserted, only got %d\n", len(rows))
+	}
+
+	err = mysqldb.Delete(&TestUser{Id: id1})
+	if err != nil {
+		t.Error(err)
+	}
+	err = mysqldb.Delete(&TestUser{Id: id2})
+	if err != nil {
+		t.Error(err)
+	}
+
+}
+
+func TestMySQLRollback(t *testing.T) {
+
+	EnsureMySQL()
+
+	err := mysqldb.StartTransaction()
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, err = mysqldb.Create(&TestUser{
+		First: "ruser1",
+		Last:  sql.NullString{String: "johnson", Valid: true},
+	})
+	if err != nil {
+		t.Error(err)
+	}
+	_, err = mysqldb.Create(&TestUser{
+		First: "ruser2",
+		Last:  sql.NullString{String: "johnson", Valid: true},
+	})
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = mysqldb.Rollback()
+	if err != nil {
+		t.Error(err)
+	}
+
+	rows := make([]*TestUser, 0, 0)
+
+	err = mysqldb.FindAll(&rows, "WHERE first_name like 'ruser%'")
+	if err != nil {
+		t.Error(err)
+	}
+	if len(rows) != 0 {
+		t.Errorf("expected 0 records inserted, only got %d\n", len(rows))
+		for _, user := range rows {
+			err = mysqldb.Delete(&TestUser{Id: user.Id})
+			if err != nil {
+				t.Error(err)
+			}
+		}
 	}
 
 }

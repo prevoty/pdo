@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -32,4 +33,26 @@ func NewMySQL(dsn string) (*MySQL, error) {
 
 	return m, nil
 
+}
+
+func (m *MySQL) StartTransaction() error {
+	_, err := m.DB.Exec("START TRANSACTION")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func (m *MySQL) Rollback() error {
+	_, err := m.DB.Exec("ROLLBACK")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func (m *MySQL) Commit() error {
+	_, err := m.DB.Exec("COMMIT")
+	if err != nil {
+		return err
+	}
+	return nil
 }

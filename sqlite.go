@@ -6,8 +6,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	_ "github.com/mattn/go-sqlite3"
 	"os"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type (
@@ -37,4 +38,26 @@ func NewSqlite(dsn string) (*Sqlite, error) {
 
 	return s, nil
 
+}
+
+func (s *Sqlite) StartTransaction() error {
+	_, err := s.DB.Exec("BEGIN TRANSACTION")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func (s *Sqlite) Rollback() error {
+	_, err := s.DB.Exec("ROLLBACK")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func (s *Sqlite) Commit() error {
+	_, err := s.DB.Exec("COMMIT")
+	if err != nil {
+		return err
+	}
+	return nil
 }
