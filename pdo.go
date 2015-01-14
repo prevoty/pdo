@@ -105,7 +105,7 @@ func (d *DBO) Update(record_ptr interface{}) error {
 	defer stmt.Close()
 
 	// grab id value
-	id := reflect.ValueOf(record_ptr).Elem().FieldByName("Id").Interface()
+	id := reflect.ValueOf(record_ptr).Elem().FieldByName("ID").Interface()
 
 	// add id to end of values list
 	values := append(FieldPointers(record_ptr, []string{"id"}), id)
@@ -139,7 +139,7 @@ func (d *DBO) Delete(record_ptr interface{}) error {
 	}
 	defer stmt.Close()
 
-	id := reflect.ValueOf(record_ptr).Elem().FieldByName("Id").Interface()
+	id := reflect.ValueOf(record_ptr).Elem().FieldByName("ID").Interface()
 
 	_, err = stmt.Exec(id)
 	if err != nil {
