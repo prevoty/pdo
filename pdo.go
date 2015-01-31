@@ -32,7 +32,7 @@ func (d *DBO) Create(record_ptr interface{}) (int64, error) {
 	sql.WriteString(Table(record_ptr))
 	sql.WriteString("` (")
 
-	for _, col := range Columns(record_ptr, []string{"id"}) {
+	for _, col := range Columns(record_ptr, EmptySkipList) {
 		sql.WriteString("`")
 		sql.WriteString(col)
 		sql.WriteString("`,")
@@ -43,7 +43,7 @@ func (d *DBO) Create(record_ptr interface{}) (int64, error) {
 
 	sql.WriteString(") VALUES (")
 
-	values := FieldPointers(record_ptr, []string{"id"})
+	values := FieldPointers(record_ptr, EmptySkipList)
 
 	for i := 0; i < len(values); i++ {
 		sql.WriteString("?,")
