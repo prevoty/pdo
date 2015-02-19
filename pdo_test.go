@@ -20,10 +20,8 @@ type (
 
 var (
 	mysqldb *MySQL
-	//sqlitedb *Sqlite
 
-	MySQLbuilt  = false
-	Sqlitebuilt = false
+	MySQLbuilt = false
 )
 
 func TestMySQLFind(t *testing.T) {

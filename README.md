@@ -6,7 +6,7 @@ A simple object/table mapper for easy access to your table records. Fetch data u
 Utilizes go's reflection library for type flexibility, and prompts incorrect types with intelligible panics.
 
 
-### currently supports mysql, sqlite
+### currently supports mysql
 
 ```go
 package main
@@ -27,7 +27,7 @@ type User struct {
 
 func main() {
 
-	db, err = pdo.NewSqlite("test.db")
+	db, err = pdo.NewMySQL("user@tcp(localhost:3306)/testdb")
 	if err != nil {
 		log.Fatal(err)
 	}
