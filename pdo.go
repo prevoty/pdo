@@ -242,6 +242,10 @@ func (d *DBO) FindAll(record_set_ptr interface{}, where string, params ...interf
 
 }
 
+func (d *DBO) Sql(query string, params []interface{}) (*stdlib_sql.Rows, error) {
+	return d.DB.Query(query, params...)
+}
+
 func (d *DBO) Close() error {
 
 	return d.DB.Close()
