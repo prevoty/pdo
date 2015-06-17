@@ -73,6 +73,71 @@ func (d *DBO) Create(record_ptr interface{}) (int64, error) {
 
 }
 
+func (d *DBO) Upsert(record_ptr interface{}) (int64, error) {
+
+	switch t := reflect.TypeOf(record_ptr); {
+	case t.Kind() != reflect.Ptr,
+		t.Elem().Kind() != reflect.Struct:
+		panic("only *Struct value allowed")
+	}
+
+	var sql bytes.Buffer
+
+	sql.WriteString("INSERT INTO `")
+	sql.WriteString(Table(record_ptr))
+	sql.WriteString("` (")
+
+	cols := Columns(record_ptr, EmptySkipList)
+
+	for _, col := range cols {
+		sql.WriteString("`")
+		sql.WriteString(col)
+		sql.WriteString("`,")
+	}
+
+	// trim off last comma
+	sql.Truncate(sql.Len() - 1)
+
+	sql.WriteString(") VALUES (")
+
+	values := FieldPointers(record_ptr, EmptySkipList)
+
+	for range values {
+		sql.WriteString("?,")
+	}
+
+	// trim off last comma
+	sql.Truncate(sql.Len() - 1)
+
+	sql.WriteString(") ON DUPLICATE KEY UPDATE ")
+
+	for _, col := range cols {
+		sql.WriteString("`")
+		sql.WriteString(col)
+		sql.WriteString("` = ?,")
+	}
+
+	sqlStr := sql.String()
+	sqlStr = sqlStr[:len(sqlStr)-1] // get rid of last comma
+
+	stmt, err := d.DB.Prepare(sqlStr)
+	if err != nil {
+		return 0, err
+	}
+	defer stmt.Close()
+
+	r, err := stmt.Exec(append(values, values...)...)
+	if err != nil {
+		return 0, err
+	}
+	id, err := r.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
+}
+
 func (d *DBO) Update(record_ptr interface{}) error {
 
 	switch t := reflect.TypeOf(record_ptr); {
